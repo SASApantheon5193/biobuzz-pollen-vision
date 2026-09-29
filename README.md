@@ -44,7 +44,7 @@ Find yellow pollen with a Limelight 3A and drive to it. Built for the FTC 2026-2
 
 > **Exposure matters more than anything else.** At 6 ms our detector scored balls around 0.45. At 20 ms the same balls scored 0.80-0.85. Under very bright venue lights, lower the exposure until the balls look bright but not washed out.
 
-Using a different Limelight? With a Google Coral, upload `limelight_neural_detector_coral.tflite` instead and set Detector Runtime to Coral. A Limelight 4 needs a Hailo `.hef` model, see [Train your own model](#train-your-own-model).
+Using a different Limelight? With a Google Coral, upload `limelight_neural_detector_coral.tflite` instead and set Detector Runtime to Coral (we haven't been able to test this file). A Limelight 4 needs a Hailo `.hef` model, see [Train your own model](#train-your-own-model).
 
 ## Step 2: Add the code to your project
 
@@ -94,9 +94,9 @@ Telemetry shows the mode (`MANUAL`, `CHASE`, `ARRIVED` or `NO TARGET`), how many
 
 Every detection above 0.5 confidence is sorted into groups: two balls are in the same group when their centers are less than about 3 ball-widths apart in the image. Each group scores **1 point per ball plus 8 × the image area of its nearest ball**. The robot aims at the center of the highest-scoring group and stops when that group's nearest ball reaches `STOP_AREA`.
 
-- A pair beats a single ball, even if the single ball is closer.
+- When it picks a new target, a pair beats a single ball unless the single is almost at the stopping point.
 - Between groups of the same size, the closer one wins.
-- It only switches to a different group if that group scores at least 25% more, so it doesn't flip back and forth between two similar piles.
+- Once it's chasing a group, a different group has to score at least 25% more to pull it away. That stops it from flipping back and forth between similar piles, but it also means it can keep chasing a close single ball after a pair comes into view.
 
 ## Tuning
 
